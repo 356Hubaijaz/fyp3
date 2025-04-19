@@ -2,24 +2,29 @@
 import mongoose from "mongoose";
 let isConnected = false;
 
-export const connectToDB = async ()=> {
-    mongoose.set('strictQuery', true);
-
-    if(isConnected) {
-        console.log('MongoDB is already connected');
-        return;
+export const connectToDB = async () => {
+    mongoose.set("strictQuery", true);
+  
+    if (isConnected) {
+      console.log("MongoDB is already connected");
+      return;
     }
-
+  
+    const mongoURI = process.env.MONGODB_URI;
+  
+    if (!mongoURI) {
+      console.error("❌ MONGODB_URI is not defined. Check your .env file.");
+      return;
+    }
+  
     try {
-        await mongoose.connect(process.env.MONGODB_URL, {
-            dbName: "Mailing_System",
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        })
-        isConnected=true;
-        console.log('MongoDB connected')
-
+      await mongoose.connect(mongoURI, {
+        dbName: "Mailing_System",
+      });
+      isConnected = true;
+      console.log("✅ MongoDB connected");
     } catch (error) {
-        console.log(error);
+      console.error("❌ MongoDB connection failed:", error);
     }
-}
+  };
+  
